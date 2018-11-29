@@ -1,0 +1,4 @@
+JAVA_HOME=/opt/jdk1.8.0_161
+JB_HOME=/appserver/acsapp/wildfly-11.0.0.Final
+JB_SERVER_NAME=axislt1-prqwf-n1
+Offset_value=15

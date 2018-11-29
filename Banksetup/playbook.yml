@@ -1,0 +1,20 @@
+---
+- hosts: localhost
+
+  tasks:
+    - name: Open file
+      shell: cp ~/Downloads/Banksetup/file.txt ~/Downloads/Banksetup/sure
+ 
+    - name: Open file
+      shell: gedit ~/Downloads/Banksetup/sure
+
+    - name: Check
+      shell: lsof | grep sure
+      
+    - name: Check
+      shell: echo $?
+      register: PID
+      
+    - name: Setup
+      shell: bash -c ~/Downloads/Banksetup/file5.sh
+      when: "PID == 1"

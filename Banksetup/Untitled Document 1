@@ -1,0 +1,56 @@
+sed -i '1 d' /home/anil/Downloads/Banksetup/sure
+
+read -p "line1" line1 < /home/anil/Downloads/Banksetup/sure
+default_value2='https://acs.gmail.com'
+     if [ "$line1" != 'UM_PROXY_URL' ]; then
+	   sed -i -e "55 s/${default_value2}/${line1:-$default_value2}/" /home/anil/Downloads/Banksetup/standalone.xml               
+     fi
+sed -i '1 d' /home/anil/Downloads/Banksetup/sure
+
+read -p "line1" line1 < /home/anil/Downloads/Banksetup/sure
+default_value3='/appserver/acsapp/'
+     if [ "$line1" != 'LINUX_ROOT_DIR' ]; then
+	   sed -i -e "60 s/${default_value3}/${line1:-$default_value3}/" /home/anil/Downloads/Banksetup/standalone.xml               
+     fi
+sed -i '1 d' /home/anil/Downloads/Banksetup/sure
+
+read -p "line1" line1 < /home/anil/Downloads/Banksetup/sure
+default_value4='192.168.105.15'
+     if [ "$line1" != 'com.enstage.hsm.HSMInterface.forceIPAndPort' ]; then
+	   sed -i -e "63 s/${default_value4}/${line1:-$default_value4}/" /home/anil/Downloads/Banksetup/standalone.xml               
+     fi
+sed -i '1 d' /home/anil/Downloads/Banksetup/sure
+
+read -p "line1" line1 < /home/anil/Downloads/Banksetup/sure
+default_value5="ConnectionPool"
+     if [ "$line1" != 'ConnectionPool' ]; then
+	   sed -i -e "204 s/${default_value5}/${line1:-$default_value5}/" /home/anil/Downloads/Banksetup/standalone.xml               
+     fi
+
+read -p "line1" line1 < /home/anil/Downloads/Banksetup/sure
+default_value6="ACSConnectionPool"
+     if [ "$line1" != 'ACSConnectionPool' ]; then
+	   sed -i -e "709 s/${default_value6}/${line1:-$default_value6}/" /home/anil/Downloads/Banksetup/standalone.xml               
+     fi
+sed -i '1 d' /home/anil/Downloads/Banksetup/sure
+
+read -p "line1" line1 < /home/anil/Downloads/Banksetup/sure
+default_value7="GlobalDB"
+     if [ "$line1" != 'GlobalDB' ]; then
+	   sed -i -e "205 s/${default_value7}/${line1:-$default_value7}/" /home/anil/Downloads/Banksetup/standalone.xml               
+     fi
+sed -i '1 d' /home/anil/Downloads/Banksetup/sure
+
+read -p "line1" line1 < /home/anil/Downloads/Banksetup/sure
+default_value8="EncryptACSPassword"
+     if [ "$line1" != 'EncryptACSPassword' ]; then
+	   sed -i -e "216 s/${default_value8}/${line1:-$default_value8}/" /home/anil/Downloads/Banksetup/standalone.xml               
+     fi
+
+read -p "line1" line1 < /home/anil/Downloads/Banksetup/sure
+default_value9="EncryptACSPassword"
+     if [ "$line1" != 'EncryptACSPassword' ]; then
+	   sed -i -e "704 s/${default_value9}/${line1:-$default_value8}/" /home/anil/Downloads/Banksetup/standalone.xml               
+     fi
+sed -i '1 d' /home/anil/Downloads/Banksetup/sure
+

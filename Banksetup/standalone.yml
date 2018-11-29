@@ -1,0 +1,132 @@
+---
+- hosts: localhost 
+  vars:
+    path: /home/anil/Documents/wildfly-11.0.0.Final/standalone/configuration/standalone.xml
+   
+  vars_prompt:
+    - name: Directory
+      prompt: "Enter directory name"
+      private: no
+    - name: Destination
+      prompt: "Enter /path/wants/to/copy/directory"
+      private: no
+    - name: IP
+      prompt: "Enter remote Ip to copy"
+      private: no
+    - name: offset
+      prompt: "Enter offset value"
+      private: no
+    - name: ACCOSA_APP_ROOT
+      prompt: "Enter ACCOSA_APP_ROOT path"
+      private: no 
+    - name: UM_PROXY_URL
+      prompt: "Enter IP:Port for UM_PROXY_URL "
+      private: no
+    - name: LINUX_ROOT_DIR
+      prompt: "Enter LINUX_ROOT_DIR"
+      private: no
+    - name: HSM_PORT
+      prompt: "com.enstage.hsm.HSMInterface.forceIPAndPort"
+      private: no
+    - name: Connection_pool
+      prompt: "Enter connection pool" 
+      private: no
+#    - name: Database
+#      prompt: "Enter database"
+#      private: no
+    - name: Bank_name
+      prompt: "Enter bank name" 
+      private: no
+
+  pre_tasks:
+    - name: Copying file
+      shell: "cp /home/anil/Documents/Banksetup/standalone.xml /home/anil/Documents/wildfly-11.0.0.Final/standalone/configuration/ ; mode=0777"
+    
+    - shell: "cp /home/anil/Documents/Banksetup/axislt1-vrqwf-n1.sh /home/anil/Documents/wildfly-11.0.0.Final/bin/ ; mode=0777"
+      
+ 
+  tasks:    
+    - name: Setting offset value 
+      replace:
+         dest: /home/anil/Documents/wildfly-11.0.0.Final/bin/axislt1-vrqwf-n1.sh
+         regexp: '-Djboss.socket.binding.port-offset='
+         replace: '-Djboss.socket.binding.port-offset={{ offset }}'
+      
+    - name: Configuring ACCOSA_APP_ROOT
+      replace: 
+         dest: "{{ path }}"
+         regexp: '<property name="ACCOSA_APP_ROOT" value=" "/>'
+         replace: '<property name="ACCOSA_APP_ROOT" value="{{ ACCOSA_APP_ROOT }}"/>'
+      
+    - name: Configuring UM_PROXY_URL
+      replace: 
+         dest: "{{ path }}"  
+         regexp: '<property name="UM_PROXY_URL" value=" "/>'
+         replace: '<property name="UM_PROXY_URL" value="http://{{ UM_PROXY_URL }}/ACSWeb/jsp/BankGateway.jsp"/>'
+
+    - name: Configuring LINUX_ROOT_DIR
+      replace: 
+         dest: "{{ path }}"  
+         regexp: '<property name="LINUX_ROOT_DIR" value=" "/>'
+         replace: '<property name="LINUX_ROOT_DIR" value="{{ LINUX_ROOT_DIR }}"/>'
+    
+    - name: Configuring com.enstage.hsm.HSMInterface.forceIPAndPort
+      replace: 
+         dest: "{{ path }}"  
+         regexp: '<property name="com.enstage.hsm.HSMInterface.forceIPAndPort" value=" "/>'
+         replace: '<property name="com.enstage.hsm.HSMInterface.forceIPAndPort" value="{{ HSM_PORT }}"/>'
+     
+    - name: Configuring connection pool
+      replace:
+         dest: "{{ path }}" 
+         regexp:  '<datasource jta="true" jndi-name="java:/ConnectionPool" pool-name="ConnectionPool" enabled="true" use-java-context="true" spy="false" use-ccm="true" connectable="false">'
+         replace:  '<datasource jta="true" jndi-name="java:/{{ Connection_pool }}ConnectionPool" pool-name="{{ Connection_pool }}ConnectionPool" enabled="true" use-java-context="true" spy="false" use-ccm="true" connectable="false">'
+                   
+    - name: Configuring bank name
+      replace: 
+         dest: "{{ path }}" 
+         regexp: '<security-domain>EncryptACSPassword</security-domain>'
+         replace: '<security-domain>Encrypt{{ Bank_name }}Password</security-domain>'
+
+    - name: Configuring Encryption method
+      replace: 
+         dest: "{{ path }}"  
+         regexp: '<security-domain name="EncryptACSPassword">'
+         replace: '<security-domain name="Encrypt{{ Bank_name }}Password">'
+
+    - name: Configuring connection factory
+      replace:
+         dest: "{{ path }}"  
+         regexp: '<module-option name="managedConnectionFactoryName" value="jboss.jca:service=LocalTxCM,name=ACSConnectionPool"/>'
+         replace: '<module-option name="managedConnectionFactoryName" value="jboss.jca:service=LocalTxCM,name={{ Connection_pool }}ConnectionPool"/>'
+
+    - name: Creting directoty.
+      file: 
+         path: /home/anil/Documents/{{ Directory }}
+         state: directory
+         recurse: yes
+  
+    - name: Checking for existence of directory
+      shell: "ls -t | head -1 | awk '{print $NF}'"
+      args: 
+        chdir: /home/anil/Documents/
+      register: D  
+   
+    - name: Copying ready configuration.
+      synchronize:
+        src: /home/anil/Documents/wildfly-11.0.0.Final/ 
+        dest: /home/anil/Documents/{{ item }}/
+        recursive: yes
+      with_items: 
+         - "{{ D.stdout }}"
+
+    - name: Moving setup
+      shell: scp -r {{ item }}  {{ Destination }}
+      args:
+        chdir: "/home/anil/Documents/"
+      delegate_to: "{{ IP }}"
+      with_items:
+        - "{{ D.stdout }}"
+      
+    
+    

@@ -1,0 +1,12 @@
+ACCOSA_APP_ROOT
+UM_PROXY_URL
+LINUX_ROOT_DIR
+com.enstage.hsm.HSMInterface.forceIPAndPort
+entransact-GlobalDB
+ACSConnectionPool-GlobalDB
+CommonConnectionPool-GlobalDB
+OTPConnectionPool-GlobalDB
+IBSConnectionPool-GlobalDB
+BankConnectionPool
+BankConnectionPool-GlobalDB
+EncryptBankPassword
